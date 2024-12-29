@@ -1,0 +1,10 @@
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\bin\Debug\Dbms project task 4.exe.config
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\bin\Debug\Dbms project task 4.exe
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\bin\Debug\Dbms project task 4.pdb
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms project task 4.csproj.AssemblyReference.cache
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms_project_task_4.Form1.resources
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms_project_task_4.Properties.Resources.resources
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms project task 4.csproj.GenerateResource.cache
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms project task 4.csproj.CoreCompileInputs.cache
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms project task 4.exe
+C:\Users\shaya\source\repos\Dbms project task 4\Dbms project task 4\obj\Debug\Dbms project task 4.pdb
