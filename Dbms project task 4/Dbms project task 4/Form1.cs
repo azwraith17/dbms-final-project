@@ -13,477 +13,363 @@ namespace Dbms_project_task_4
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Load data into the tables
+            // TODO: This line of code loads data into the 'restaurantDataSet.MenuItem' table. You can move, or remove it, as needed.
+            this.menuItemTableAdapter.Fill(this.restaurantDataSet.MenuItem);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Menu' table. You can move, or remove it, as needed.
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            // TODO: This line of code loads data into the 'restaurantDataSet.MenuItem' table. You can move, or remove it, as needed.
+            this.menuItemTableAdapter.Fill(this.restaurantDataSet.MenuItem);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Menu' table. You can move, or remove it, as needed.
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Menu' table. You can move, or remove it, as needed.
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            // TODO: This line of code loads data into the 'restaurantDataSet.OrderItem' table. You can move, or remove it, as needed.
+            this.orderItemTableAdapter.Fill(this.restaurantDataSet.OrderItem);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Order' table. You can move, or remove it, as needed.
+            this.orderTableAdapter.Fill(this.restaurantDataSet.Order);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Menu' table. You can move, or remove it, as needed.
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Customer' table. You can move, or remove it, as needed.
             this.customerTableAdapter.Fill(this.restaurantDataSet.Customer);
-            this.restaurantTableAdapter.Fill(this.restaurantDataSet1.Restaurant);
-            this.menuTableAdapter.Fill(this.restaurantDataSet2.Menu);
-            this.orderTableAdapter.Fill(this.restaurantDataSet2.Order);
-            this.orderItemTableAdapter.Fill(this.restaurantDataSet2.OrderItem);
+            // TODO: This line of code loads data into the 'restaurantDataSet.Restaurant' table. You can move, or remove it, as needed.
+            this.restaurantTableAdapter.Fill(this.restaurantDataSet.Restaurant);
+            // TODO: This line of code loads data into the 'foodOrderingSystemDataSet.Restaurant' table. You can move, or remove it, as needed.
         }
-
-        // Customer CRUD operations
-        private void LoadCustomerData()
+        
+        private void clearCustomerText()
         {
-            this.customerTableAdapter.Fill(this.restaurantDataSet.Customer);
-            dataGridViewCustomer.DataSource = this.restaurantDataSet.Customer;
+            txtFirstName.Text = "";
+            txtLastName.Text = "";
+            txtEmail.Text = "";
+            txtPhoneNumber.Text = "";
+            txtAddress.Text = "";
         }
 
         private void btnAddCustomer_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var newRow = restaurantDataSet.Customer.NewCustomerRow();
-                newRow.FirstName = txtFirstName.Text;
-                newRow.LastName = txtLastName.Text;
-                newRow.Email = txtEmail.Text;
-                newRow.PhoneNumber = txtPhoneNumber.Text;
-                newRow.Address = txtAddress.Text;
-
-                restaurantDataSet.Customer.Rows.Add(newRow);
-                customerTableAdapter.Update(restaurantDataSet.Customer);
-                LoadCustomerData();
-                MessageBox.Show("Customer added successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding customer: " + ex.Message);
-            }
+            this.customerTableAdapter.Insert(txtFirstName.Text, txtLastName.Text, txtEmail.Text, txtPhoneNumber.Text, txtAddress.Text);
+            this.customerTableAdapter.Fill(this.restaurantDataSet.Customer);
+            clearCustomerText();
         }
 
         private void btnUpdateCustomer_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewCustomer.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewCustomer.CurrentRow.DataBoundItem;
-                    selectedRow["FirstName"] = txtFirstName.Text;
-                    selectedRow["LastName"] = txtLastName.Text;
-                    selectedRow["Email"] = txtEmail.Text;
-                    selectedRow["PhoneNumber"] = txtPhoneNumber.Text;
-                    selectedRow["Address"] = txtAddress.Text;
-
-                    customerTableAdapter.Update(restaurantDataSet.Customer);
-                    LoadCustomerData();
-                    MessageBox.Show("Customer updated successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating customer: " + ex.Message);
-            }
+            int customerID;
+            int.TryParse(cbCustomer.SelectedValue.ToString(), out customerID);
+            this.customerTableAdapter.UpdateQuery(txtFirstName.Text, txtLastName.Text, txtEmail.Text, txtPhoneNumber.Text, txtAddress.Text, customerID);
+            this.customerTableAdapter.Fill(this.restaurantDataSet.Customer);
+            clearCustomerText();
         }
 
         private void btnDeleteCustomer_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewCustomer.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewCustomer.CurrentRow.DataBoundItem;
-                    selectedRow.Delete();
-
-                    customerTableAdapter.Update(restaurantDataSet.Customer);
-                    LoadCustomerData();
-                    MessageBox.Show("Customer deleted successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error deleting customer: " + ex.Message);
-            }
+            int customerID;
+            int.TryParse(cbCustomer.SelectedValue.ToString(), out customerID);
+            this.customerTableAdapter.DeleteQuery(customerID);
+            this.customerTableAdapter.Fill(this.restaurantDataSet.Customer);
+            clearCustomerText();
         }
 
         private void btnSearchCustomer_Click(object sender, EventArgs e)
         {
-            try
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewCustomer.Rows)
             {
-                var filter = $"FirstName LIKE '%{txtFirstName.Text}%'";
-                var rows = restaurantDataSet.Customer.Select(filter);
-                if (rows.Length > 0)
+                if (row.Cells[1].Value.ToString().Equals(txtFirstName.Text))
                 {
-                    dataGridViewCustomer.DataSource = rows.CopyToDataTable();
+                    dataGridViewCustomer.ClearSelection();
+                    dataGridViewCustomer.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
                 }
-                else
-                {
-                    dataGridViewCustomer.DataSource = null;
-                }
-                MessageBox.Show("Search completed.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching customer: " + ex.Message);
-            }
+            if (found == 0) MessageBox.Show("Customer not found");
+            else MessageBox.Show("Customer found");
+            clearCustomerText();
         }
 
-        // Restaurant CRUD operations
-        private void LoadRestaurantData()
+        //    RESTAURANT  //
+
+        private void clearRestaurantText()
         {
-            this.restaurantTableAdapter.Fill(this.restaurantDataSet1.Restaurant);
-            dataGridViewRestaurant.DataSource = this.restaurantDataSet1.Restaurant;
+            txtRestaurantName.Text = "";
+            txtLocation.Text = "";
+            txtContactNumber.Text = "";
+            txtRestaurantEmail.Text = "";
         }
-
         private void btnAddRestaurant_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var newRow = restaurantDataSet1.Restaurant.NewRestaurantRow();
-                newRow.RestaurantName = txtRestaurantName.Text;
-                newRow.Location = txtLocation.Text;
-                newRow.ContactNumber = txtContactNumber.Text;
-                newRow.Email = txtRestaurantEmail.Text;
-
-                restaurantDataSet1.Restaurant.Rows.Add(newRow);
-                restaurantTableAdapter.Update(restaurantDataSet1.Restaurant);
-                LoadRestaurantData();
-                MessageBox.Show("Restaurant added successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding restaurant: " + ex.Message);
-            }
-        }
-
-        private void btnUpdateRestaurant_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (dataGridViewRestaurant.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewRestaurant.CurrentRow.DataBoundItem;
-                    selectedRow["RestaurantName"] = txtRestaurantName.Text;
-                    selectedRow["Location"] = txtLocation.Text;
-                    selectedRow["ContactNumber"] = txtContactNumber.Text;
-                    selectedRow["Email"] = txtRestaurantEmail.Text;
-
-                    restaurantTableAdapter.Update(restaurantDataSet1.Restaurant);
-                    LoadRestaurantData();
-                    MessageBox.Show("Restaurant updated successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating restaurant: " + ex.Message);
-            }
+            this.restaurantTableAdapter.Insert(txtRestaurantName.Text, txtLocation.Text, txtContactNumber.Text, txtRestaurantEmail.Text);
+            this.restaurantTableAdapter.Fill(this.restaurantDataSet.Restaurant);
+            clearRestaurantText();
         }
 
         private void btnDeleteRestaurant_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewRestaurant.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewRestaurant.CurrentRow.DataBoundItem;
-                    selectedRow.Delete();
+            this.restaurantTableAdapter.DeleteQuery(int.Parse(cbRestaurant.SelectedValue.ToString()));
+            this.restaurantTableAdapter.Fill(this.restaurantDataSet.Restaurant);
+            clearRestaurantText();
+        }
 
-                    restaurantTableAdapter.Update(restaurantDataSet1.Restaurant);
-                    LoadRestaurantData();
-                    MessageBox.Show("Restaurant deleted successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error deleting restaurant: " + ex.Message);
-            }
+        private void btnUpdateRestaurant_Click(object sender, EventArgs e)
+        {
+            int restaurantID;
+            int.TryParse(cbRestaurant.SelectedValue.ToString(), out restaurantID);
+            this.restaurantTableAdapter.UpdateQuery(txtRestaurantName.Text, txtLocation.Text, txtContactNumber.Text, txtRestaurantEmail.Text, restaurantID);
+            this.restaurantTableAdapter.Fill(this.restaurantDataSet.Restaurant);
+            clearRestaurantText();
         }
 
         private void btnSearchRestaurant_Click(object sender, EventArgs e)
         {
-            try
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewRestaurant.Rows)
             {
-                var filter = $"RestaurantName LIKE '%{txtRestaurantName.Text}%'";
-                var rows = restaurantDataSet1.Restaurant.Select(filter);
-                if (rows.Length > 0)
+                if (row.Cells[1].Value.ToString().Equals(txtRestaurantName.Text))
                 {
-                    dataGridViewRestaurant.DataSource = rows.CopyToDataTable();
+                    dataGridViewRestaurant.ClearSelection();
+                    dataGridViewRestaurant.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
                 }
-                else
-                {
-                    dataGridViewRestaurant.DataSource = null;
-                }
-                MessageBox.Show("Search completed.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching restaurant: " + ex.Message);
-            }
+            if (found == 0) MessageBox.Show("Restaurant not found");
+            else MessageBox.Show("Restaurant found");
+            clearRestaurantText();
         }
 
-        // Menu CRUD operations
-        private void LoadMenuData()
+        //    MENU  //
+
+        private void clearMenuText()
         {
-            this.menuTableAdapter.Fill(this.restaurantDataSet2.Menu);
-            dataGridViewMenu.DataSource = this.restaurantDataSet2.Menu;
+            txtMenuName.Text = "";
+            txtRestaurantIDinput.Text = "";
         }
-
         private void btnAddMenu_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var newRow = restaurantDataSet2.Menu.NewMenuRow();
-                newRow.RestaurantID = int.Parse(txtRestaurantID.Text);
-                newRow.MenuName = txtMenuName.Text;
-
-                restaurantDataSet2.Menu.Rows.Add(newRow);
-                menuTableAdapter.Update(restaurantDataSet2.Menu);
-                LoadMenuData();
-                MessageBox.Show("Menu added successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding menu: " + ex.Message);
-            }
+            int restaurantID;
+            int.TryParse(txtRestaurantIDinput.Text, out restaurantID);
+            this.menuTableAdapter.Insert(restaurantID, txtMenuName.Text);
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            clearMenuText();
         }
 
         private void btnUpdateMenu_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewMenu.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewMenu.CurrentRow.DataBoundItem;
-                    selectedRow["RestaurantID"] = int.Parse(txtRestaurantID.Text);
-                    selectedRow["MenuName"] = txtMenuName.Text;
-
-                    menuTableAdapter.Update(restaurantDataSet2.Menu);
-                    LoadMenuData();
-                    MessageBox.Show("Menu updated successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating menu: " + ex.Message);
-            }
+            int menuID;
+            int.TryParse(cbMenu.SelectedValue.ToString(), out menuID);
+            this.menuTableAdapter.UpdateQuery(int.Parse(txtRestaurantIDinput.Text), txtMenuName.Text, menuID);
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            clearMenuText();
         }
 
         private void btnDeleteMenu_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewMenu.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewMenu.CurrentRow.DataBoundItem;
-                    selectedRow.Delete();
-
-                    menuTableAdapter.Update(restaurantDataSet2.Menu);
-                    LoadMenuData();
-                    MessageBox.Show("Menu deleted successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error deleting menu: " + ex.Message);
-            }
+            this.menuTableAdapter.DeleteQuery(int.Parse(cbMenu.SelectedValue.ToString()));
+            this.menuTableAdapter.Fill(this.restaurantDataSet.Menu);
+            clearMenuText();
         }
 
         private void btnSearchMenu_Click(object sender, EventArgs e)
         {
-            try
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewMenu.Rows)
             {
-                var filter = $"MenuName LIKE '%{txtMenuName.Text}%'";
-                var rows = restaurantDataSet2.Menu.Select(filter);
-                if (rows.Length > 0)
+                if (row.Cells[1].Value.ToString().Equals(txtMenuName.Text))
                 {
-                    dataGridViewMenu.DataSource = rows.CopyToDataTable();
+                    dataGridViewMenu.ClearSelection();
+                    dataGridViewMenu.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
                 }
-                else
-                {
-                    dataGridViewMenu.DataSource = null;
-                }
-                MessageBox.Show("Search completed.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching menu: " + ex.Message);
-            }
+            if (found == 0) MessageBox.Show("Menu not found");
+            else MessageBox.Show("Menu found");
         }
 
-        // Order CRUD operations
-        private void LoadOrderData()
+        //    ORDER  //
+
+        private void clearOrderText()
         {
-            this.orderTableAdapter.Fill(this.restaurantDataSet2.Order);
-            dataGridViewOrder.DataSource = this.restaurantDataSet2.Order;
+            txtCustomerID.Text = "";
+            txtOrderRestaurantID.Text = "";
+            txtOrderDate.Text = "";
+            txtTotalAmount.Text = "";
+            txtOrderStatus.Text = "";
         }
 
         private void btnAddOrder_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var newRow = restaurantDataSet2.Order.NewOrderRow();
-                newRow.CustomerID = int.Parse(txtCustomerID.Text);
-                newRow.RestaurantID = int.Parse(txtOrderRestaurantID.Text);
-                newRow.OrderDate = DateTime.Parse(txtOrderDate.Text);
-                newRow.TotalAmount = decimal.Parse(txtTotalAmount.Text);
-                newRow.OrderStatus = txtOrderStatus.Text;
-
-                restaurantDataSet2.Order.Rows.Add(newRow);
-                orderTableAdapter.Update(restaurantDataSet2.Order);
-                LoadOrderData();
-                MessageBox.Show("Order added successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding order: " + ex.Message);
-            }
+            int customerID, restaurantID;
+            int.TryParse(txtCustomerID.Text, out customerID);
+            int.TryParse(txtOrderRestaurantID.Text, out restaurantID);
+            DateTime orderDate;
+            DateTime.TryParse(txtOrderDate.Text, out orderDate);
+            this.orderTableAdapter.Insert(customerID, restaurantID, orderDate, decimal.Parse(txtTotalAmount.Text), txtOrderStatus.Text);
+            this.orderTableAdapter.Fill(this.restaurantDataSet.Order);
+            clearOrderText();
         }
 
         private void btnUpdateOrder_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewOrder.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewOrder.CurrentRow.DataBoundItem;
-                    selectedRow["CustomerID"] = int.Parse(txtCustomerID.Text);
-                    selectedRow["RestaurantID"] = int.Parse(txtOrderRestaurantID.Text);
-                    selectedRow["OrderDate"] = DateTime.Parse(txtOrderDate.Text);
-                    selectedRow["TotalAmount"] = decimal.Parse(txtTotalAmount.Text);
-                    selectedRow["OrderStatus"] = txtOrderStatus.Text;
-
-                    orderTableAdapter.Update(restaurantDataSet2.Order);
-                    LoadOrderData();
-                    MessageBox.Show("Order updated successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating order: " + ex.Message);
-            }
+            int orderID;
+            int.TryParse(cbOrder.SelectedValue.ToString(), out orderID);
+            DateTime orderDate;
+            DateTime.TryParse(txtOrderDate.Text, out orderDate);
+            this.orderTableAdapter.UpdateQuery(int.Parse(txtCustomerID.Text), int.Parse(txtOrderRestaurantID.Text), orderDate, decimal.Parse(txtTotalAmount.Text), txtOrderStatus.Text, orderID);
+            this.orderTableAdapter.Fill(this.restaurantDataSet.Order);
+            clearOrderText();
         }
 
         private void btnDeleteOrder_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewOrder.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewOrder.CurrentRow.DataBoundItem;
-                    selectedRow.Delete();
-
-                    orderTableAdapter.Update(restaurantDataSet2.Order);
-                    LoadOrderData();
-                    MessageBox.Show("Order deleted successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error deleting order: " + ex.Message);
-            }
+            this.orderTableAdapter.DeleteQuery(int.Parse(cbOrder.SelectedValue.ToString()));
+            this.orderTableAdapter.Fill(this.restaurantDataSet.Order);
+            clearOrderText();
         }
 
         private void btnSearchOrder_Click(object sender, EventArgs e)
         {
-            try
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewOrder.Rows)
             {
-                var filter = $"OrderStatus LIKE '%{txtOrderStatus.Text}%'";
-                var rows = restaurantDataSet2.Order.Select(filter);
-                if (rows.Length > 0)
+                if (row.Cells[1].Value.ToString().Equals(txtCustomerID.Text))
                 {
-                    dataGridViewOrder.DataSource = rows.CopyToDataTable();
+                    dataGridViewOrder.ClearSelection();
+                    dataGridViewOrder.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
                 }
-                else
-                {
-                    dataGridViewOrder.DataSource = null;
-                }
-                MessageBox.Show("Search completed.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching order: " + ex.Message);
-            }
+            if (found == 0) MessageBox.Show("Order not found");
+            else MessageBox.Show("Order found");
+            clearOrderText();
         }
 
-        // OrderItem CRUD operations
-        private void LoadOrderItemData()
+        //    MENU ITEM  //
+
+        private void clearMenuItemText()
         {
-            this.orderItemTableAdapter.Fill(this.restaurantDataSet2.OrderItem);
-            dataGridViewOrderItem.DataSource = this.restaurantDataSet2.OrderItem;
+            txtMenuItemID.Text = "";
+            txtItemName.Text = "";
+            txtDescription.Text = "";
+            txtPrice.Text = "";
+        }
+
+        private void btnAddMenuItem_Click(object sender, EventArgs e)
+        {
+            int menuID;
+            int.TryParse(cbMenu.SelectedValue.ToString(), out menuID);
+            this.menuItemTableAdapter.Insert(menuID, txtItemName.Text, txtDescription.Text, decimal.Parse(txtPrice.Text));
+            this.menuItemTableAdapter.Fill(this.restaurantDataSet.MenuItem);
+            clearMenuItemText();
+        }
+
+        private void btnUpdateMenuItem_Click(object sender, EventArgs e)
+        {
+            int menuItemID;
+            int.TryParse(cbMenuItem.SelectedValue.ToString(), out menuItemID);
+            this.menuItemTableAdapter.UpdateQuery(int.Parse(cbMenu.SelectedValue.ToString()), txtItemName.Text, txtDescription.Text, decimal.Parse(txtPrice.Text), menuItemID);
+            this.menuItemTableAdapter.Fill(this.restaurantDataSet.MenuItem);
+            clearMenuItemText();
+        }
+
+        private void btnDeleteMenuItem_Click(object sender, EventArgs e)
+        {
+            this.menuItemTableAdapter.DeleteQuery(int.Parse(cbMenuItem.SelectedValue.ToString()));
+            this.menuItemTableAdapter.Fill(this.restaurantDataSet.MenuItem);
+            clearMenuItemText();
+        }
+
+        private void btnSearchMenuItem_Click(object sender, EventArgs e)
+        {
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewMenuItem.Rows)
+            {
+                if (row.Cells[1].Value.ToString().Equals(txtItemName.Text))
+                {
+                    dataGridViewMenuItem.ClearSelection();
+                    dataGridViewMenuItem.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
+                }
+            }
+            if (found == 0) MessageBox.Show("Menu Item not found");
+            else MessageBox.Show("Menu Item found");
+            clearMenuItemText();
+        }
+
+
+        //    ORDER ITEM  //
+
+        private void clearOrderItemText()
+        {
+            txtOrderID.Text = "";
+            txtMenuItemID.Text = "";
+            txtQuantity.Text = "";
+            txtItemPrice.Text = "";
         }
 
         private void btnAddOrderItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var newRow = restaurantDataSet2.OrderItem.NewOrderItemRow();
-                newRow.OrderID = int.Parse(txtOrderID.Text);
-                newRow.MenuItemID = int.Parse(txtMenuItemID.Text);
-                newRow.Quantity = int.Parse(txtQuantity.Text);
-                newRow.ItemPrice = decimal.Parse(txtItemPrice.Text);
-
-                restaurantDataSet2.OrderItem.Rows.Add(newRow);
-                orderItemTableAdapter.Update(restaurantDataSet2.OrderItem);
-                LoadOrderItemData();
-                MessageBox.Show("Order item added successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error adding order item: " + ex.Message);
-            }
+            int orderID, menuItemID;
+            int.TryParse(txtOrderID.Text, out orderID);
+            int.TryParse(txtMenuItemID.Text, out menuItemID);
+            this.orderItemTableAdapter.Insert(orderID, menuItemID, int.Parse(txtQuantity.Text), decimal.Parse(txtItemPrice.Text));
+            this.orderItemTableAdapter.Fill(this.restaurantDataSet.OrderItem);
+            clearOrderItemText();
         }
 
         private void btnUpdateOrderItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewOrderItem.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewOrderItem.CurrentRow.DataBoundItem;
-                    selectedRow["OrderID"] = int.Parse(txtOrderID.Text);
-                    selectedRow["MenuItemID"] = int.Parse(txtMenuItemID.Text);
-                    selectedRow["Quantity"] = int.Parse(txtQuantity.Text);
-                    selectedRow["ItemPrice"] = decimal.Parse(txtItemPrice.Text);
-
-                    orderItemTableAdapter.Update(restaurantDataSet2.OrderItem);
-                    LoadOrderItemData();
-                    MessageBox.Show("Order item updated successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating order item: " + ex.Message);
-            }
+            int orderItemID;
+            int.TryParse(cbOrderItem.SelectedValue.ToString(), out orderItemID);
+            this.orderItemTableAdapter.UpdateQuery(int.Parse(txtOrderID.Text), int.Parse(txtMenuItemID.Text), int.Parse(txtQuantity.Text), decimal.Parse(txtItemPrice.Text), orderItemID);
+            this.orderItemTableAdapter.Fill(this.restaurantDataSet.OrderItem);
+            clearOrderItemText();
         }
 
         private void btnDeleteOrderItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dataGridViewOrderItem.CurrentRow != null)
-                {
-                    var selectedRow = (DataRowView)dataGridViewOrderItem.CurrentRow.DataBoundItem;
-                    selectedRow.Delete();
-
-                    orderItemTableAdapter.Update(restaurantDataSet2.OrderItem);
-                    LoadOrderItemData();
-                    MessageBox.Show("Order item deleted successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error deleting order item: " + ex.Message);
-            }
+            this.orderItemTableAdapter.DeleteQuery(int.Parse(cbOrderItem.SelectedValue.ToString()));
+            this.orderItemTableAdapter.Fill(this.restaurantDataSet.OrderItem);
+            clearOrderItemText();
         }
 
         private void btnSearchOrderItem_Click(object sender, EventArgs e)
         {
-            try
+            int found = 0;
+            foreach (DataGridViewRow row in dataGridViewOrderItem.Rows)
             {
-                var filter = $"OrderID = {txtOrderID.Text}";
-                var rows = restaurantDataSet2.OrderItem.Select(filter);
-                if (rows.Length > 0)
+                if (row.Cells[1].Value.ToString().Equals(txtOrderID.Text))
                 {
-                    dataGridViewOrderItem.DataSource = rows.CopyToDataTable();
+                    dataGridViewOrderItem.ClearSelection();
+                    dataGridViewOrderItem.Rows[row.Index].Selected = true;
+                    found = 1;
+                    break;
                 }
-                else
-                {
-                    dataGridViewOrderItem.DataSource = null;
-                }
-                MessageBox.Show("Search completed.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching order item: " + ex.Message);
-            }
+            if (found == 0) MessageBox.Show("Order Item not found");
+            else MessageBox.Show("Order Item found");
+            clearOrderItemText();
         }
+
+        //   not working //
+        private void dataGridViewRestaurant_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void txtMenuName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtRestaurantID_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 }
